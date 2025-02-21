@@ -1,2 +1,2 @@
 # filefuser
-A command line tool that merges multiple text files into a single text file using techniques like MIME multipart format.
+This tool is designed to merge multiple text files into a single .eml or .mhtml file by leveraging MIME multipart encoding. It allows users to consolidate various source files into one cohesive document, making it useful for tasks like providing context in AI prompts or securely storing secrets for deployment in environments like Kubernetes. The resulting file can easily be extracted or copied, streamlining processes that require combining and managing multiple text-based resources.
