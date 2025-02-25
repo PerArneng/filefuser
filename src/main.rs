@@ -7,6 +7,7 @@ mod args;
 mod dirscan;
 mod io_utils;
 mod logging;
+mod file_info;
 
 async fn start() -> Result<(), Box<dyn Error>> {
     let args = args::parse_args()?;
