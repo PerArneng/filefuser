@@ -1,16 +1,15 @@
 
 use std::path::PathBuf;
-use log::info;
+use log::{info, log};
 use regex::Regex;
 use crate::io_utils::{simple_patterns_to_regexps, to_io_err_with_context};
 
 pub fn get_files(dir: &PathBuf, patterns: &[String])
     -> Result<Vec<PathBuf>, Box<dyn std::error::Error>> {
 
-    info!("get_files: compiling patterns to regular expressions: {:?}", patterns);
+    info!("get_files: compiling {} patterns to regular expressions", patterns.len());
     let compiled_patterns =
         simple_patterns_to_regexps(patterns)?;
-
 
     info!("get_files: searching for files in {:?}", dir);
 

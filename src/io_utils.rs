@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::io;
+use log::info;
 use regex::Regex;
 
 
@@ -22,8 +23,9 @@ pub fn simple_patterns_to_regexps(patterns: &[String]) -> Result<Vec<Regex>, Box
 }
 
 fn simple_pattern_to_regex(pattern: &str) -> Result<Regex, Box<dyn std::error::Error>> {
-    let pattern = pattern.replace(".", "\\.").replace("*", ".*");
-    Ok(Regex::new(&pattern)?)
+    let regex = format!(".*{}", pattern.replace(".", "\\.").replace("*", ".*"));
+    info!("simple_pattern_to_regex: '{}' -> '{}'", pattern, regex);
+    Ok(Regex::new(&regex)?)
 }
 
 
@@ -34,18 +36,18 @@ mod tests {
     #[test]
     fn simple_pattern_to_regex_test_simple_pattern() {
         let result = simple_pattern_to_regex("*.txt").unwrap();
-        assert_eq!(".*\\.txt", result.as_str());
+        assert_eq!(".*.*\\.txt", result.as_str());
     }
 
     #[test]
     fn simple_pattern_to_regex_test_path_pattern() {
         let result = simple_pattern_to_regex("test/*/*.rs").unwrap();
-        assert_eq!("test/.*/.*\\.rs", result.as_str());
+        assert_eq!(".*test/.*/.*\\.rs", result.as_str());
     }
 
     #[test]
     fn simple_pattern_to_regex_test_empty_string() {
         let result = simple_pattern_to_regex("").unwrap();
-        assert_eq!("", result.as_str());
+        assert_eq!(".*", result.as_str());
     }
 }
