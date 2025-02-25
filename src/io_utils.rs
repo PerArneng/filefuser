@@ -32,7 +32,7 @@ fn simple_pattern_to_regex(pattern: &str) -> Result<Regex, Box<dyn std::error::E
     Ok(Regex::new(&regex)?)
 }
 
-async fn is_text_file(file_path: &PathBuf) -> Result<bool, Box<dyn Error>> {
+pub(crate) async fn is_text_file(file_path: &PathBuf) -> Result<bool, Box<dyn Error>> {
     let mut file = TokioFile::open(file_path).await?;
     let mut buffer = [0; 1024];
     let size = file.read(&mut buffer).await?;
