@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::path::{Path, PathBuf};
 use clap::{Arg, Command};
 use std::fs;
@@ -56,7 +55,7 @@ pub fn parse_args() -> Result<Args, Box<dyn std::error::Error>> {
         .get_matches();
 
 
-    let mut full_file_path = PathBuf::new();
+    let full_file_path: PathBuf;
     let file = matches.get_one::<String>("file").unwrap();
     let file_path = Path::new(file).to_path_buf();
     if let Some(parent) = file_path.parent() {

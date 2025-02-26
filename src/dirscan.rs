@@ -1,8 +1,8 @@
 
 use std::path::PathBuf;
-use log::{info, log};
+use log::{info};
 use regex::Regex;
-use crate::io_utils::{simple_patterns_to_regexps, to_io_err_with_context};
+use crate::io_utils::{simple_patterns_to_regexps};
 
 pub fn get_files(dir: &PathBuf, patterns: &[String])
     -> Result<Vec<PathBuf>, Box<dyn std::error::Error>> {

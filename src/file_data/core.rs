@@ -38,3 +38,22 @@ pub trait FileDataExtractor {
                 Box<dyn Error + Send + Sync>>> + Send + 'life>>;
 
 }
+
+fn filter(file_data_list: &[FileData], filter_fn: Box<dyn FnMut(&&FileData) -> bool>) -> Vec<FileData> {
+    file_data_list.into_iter()
+        .filter(filter_fn)
+        .cloned()
+        .collect()
+}
+
+pub fn only_errors(file_data_list: &[FileData]) -> Vec<FileData> {
+    filter(file_data_list, Box::new(|fd| fd.error.is_some()))
+}
+
+pub fn only_text_files(file_data_list: &[FileData]) -> Vec<FileData> {
+    filter(file_data_list, Box::new(|fd| fd.is_text.is_some() && fd.is_text.unwrap()))
+}
+
+pub fn only_binaries(file_data_list: &[FileData]) -> Vec<FileData> {
+    filter(file_data_list, Box::new(|fd| fd.is_text.is_some() && !fd.is_text.unwrap()))
+}

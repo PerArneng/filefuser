@@ -1,17 +1,19 @@
 
 use std::error::Error;
 use std::process::exit;
-use log::{error, info};
+use log::{error, info, warn};
 use crate::dirscan::{get_files};
-use crate::file_data::model::FileDataExtractor;
+use crate::file_data::core::{FileData, FileDataExtractor, only_errors, only_binaries, only_text_files};
 use crate::file_data::claude::ClaudeFileDataExtractorImpl;
 
 mod args;
 mod dirscan;
 mod io_utils;
 mod logging;
-mod file_info;
 mod file_data;
+
+
+
 
 async fn start() -> Result<(), Box<dyn Error>> {
     let args = args::parse_args()?;
@@ -23,23 +25,38 @@ async fn start() -> Result<(), Box<dyn Error>> {
     let files = get_files(&args.search_dir, &args.patterns)?;
     info!("start: got {:?} files", files.len());
 
-    let file_infos = file_info::get_file_infos(&files).await;
-    info!("start: got {:?} file info's", files.len());
-
-    let file_data_extractor: Box<dyn FileDataExtractor> = Box::new(ClaudeFileDataExtractorImpl::new());
+    let file_data_extractor: Box<dyn FileDataExtractor> =
+        Box::new(ClaudeFileDataExtractorImpl::new());
 
     let file_data_list = match file_data_extractor.get_file_data(&files).await {
         Ok(data) => data,
         Err(e) => return Err(Box::<dyn Error>::from(e.to_string())),
     };
 
-    info!("start: got {:?} file data's", files.len());
+    info!("start: got {:?} file data's", file_data_list.len());
 
-    // Your for loop is also problematic - file_data_list is a Vec<FileData>, not a Vec<Result<FileData, _>>
-    for file_data in &file_data_list {
-        info!("start: file_data: {:?}", file_data);
+    // extract all the error lists from the file_data_list
+    let errors: Vec<FileData> = only_errors(&file_data_list);
+    for error in &errors {
+        error!("start: error: {:?}", error);
     }
 
+    if !errors.is_empty() {
+
+        exit(1);
+    }
+    // from this point we know the list is only successful results
+
+    let binary_files: Vec<FileData> = only_binaries(&file_data_list);
+    if !binary_files.is_empty() {
+        warn!("start: found {:?} binary files", binary_files.len());
+        for binary_file in &binary_files {
+            warn!("start: ignoring binary: {:?}", binary_file);
+        }
+    }
+
+    let text_files: Vec<FileData> = only_text_files(&file_data_list);
+    info!("start: found {:?} text files", text_files.len());
 
     Ok(())
 }

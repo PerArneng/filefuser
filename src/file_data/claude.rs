@@ -8,7 +8,7 @@ use tokio::task;
 use std::path::PathBuf;
 
 // Importing from the crate instead of redefining
-use crate::file_data::model::{FileData, FileDataExtractor};
+use crate::file_data::core::{FileData, FileDataExtractor};
 
 pub struct ClaudeFileDataExtractorImpl {
     // We could add configuration options here if needed
