@@ -3,12 +3,15 @@ use std::error::Error;
 use std::process::exit;
 use log::{error, info};
 use crate::dirscan::{get_files};
+use crate::file_data::model::FileDataExtractor;
+use crate::file_data::claude::ClaudeFileDataExtractorImpl;
 
 mod args;
 mod dirscan;
 mod io_utils;
 mod logging;
 mod file_info;
+mod file_data;
 
 async fn start() -> Result<(), Box<dyn Error>> {
     let args = args::parse_args()?;
@@ -23,16 +26,19 @@ async fn start() -> Result<(), Box<dyn Error>> {
     let file_infos = file_info::get_file_infos(&files).await;
     info!("start: got {:?} file info's", files.len());
 
-    let error_file_infos: Vec<_> = file_infos.iter()
-        .filter(|res| res.is_err())
-        .map(|res| res.as_ref().unwrap_err().to_string())
-        .collect();
-    if !error_file_infos.is_empty() {
-        error!("start: error getting file info's: {:?}", error_file_infos);
-        exit(1);
+    let file_data_extractor: Box<dyn FileDataExtractor> = Box::new(ClaudeFileDataExtractorImpl::new());
+
+    let file_data_list = match file_data_extractor.get_file_data(&files).await {
+        Ok(data) => data,
+        Err(e) => return Err(Box::<dyn Error>::from(e.to_string())),
+    };
+
+    info!("start: got {:?} file data's", files.len());
+
+    // Your for loop is also problematic - file_data_list is a Vec<FileData>, not a Vec<Result<FileData, _>>
+    for file_data in &file_data_list {
+        info!("start: file_data: {:?}", file_data);
     }
-
-
 
 
     Ok(())
