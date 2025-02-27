@@ -4,7 +4,7 @@ use std::process::exit;
 use log::{error, info, warn};
 use crate::dirscan::{get_files};
 use crate::file_data::core::{FileData, FileDataExtractor, only_errors, only_binaries, only_text_files};
-use crate::file_data::claude::ClaudeFileDataExtractorImpl;
+use crate::file_data::extractor_impl::FileDataExtractorImpl;
 
 mod args;
 mod dirscan;
@@ -26,7 +26,7 @@ async fn start() -> Result<(), Box<dyn Error>> {
     info!("start: got {:?} files", files.len());
 
     let file_data_extractor: Box<dyn FileDataExtractor> =
-        Box::new(ClaudeFileDataExtractorImpl::new());
+        Box::new(FileDataExtractorImpl::new());
 
     let file_data_list = match file_data_extractor.get_file_data(&files).await {
         Ok(data) => data,

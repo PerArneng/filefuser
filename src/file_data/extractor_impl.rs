@@ -10,11 +10,11 @@ use std::path::PathBuf;
 // Importing from the crate instead of redefining
 use crate::file_data::core::{FileData, FileDataExtractor};
 
-pub struct ClaudeFileDataExtractorImpl {
+pub struct FileDataExtractorImpl {
     // We could add configuration options here if needed
 }
 
-impl ClaudeFileDataExtractorImpl {
+impl FileDataExtractorImpl {
     /// Creates a new instance of the ClaudeFileDataExtractorImpl
     pub fn new() -> Self {
         Self {}
@@ -53,7 +53,7 @@ impl ClaudeFileDataExtractorImpl {
     }
 }
 
-impl FileDataExtractor for ClaudeFileDataExtractorImpl {
+impl FileDataExtractor for FileDataExtractorImpl {
     fn get_file_data<'life>(
         &'life self,
         file_paths: &'life [PathBuf],

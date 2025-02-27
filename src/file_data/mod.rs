@@ -1,2 +1,2 @@
 pub(crate) mod core;
-pub(crate) mod claude;
+pub(crate) mod extractor_impl;
