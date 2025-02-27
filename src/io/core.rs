@@ -2,7 +2,6 @@ use std::error::Error;
 use std::future::Future;
 use std::path::PathBuf;
 use std::pin::Pin;
-use crate::file_data::core::FileData;
 
 pub trait Archiver {
 

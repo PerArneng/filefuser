@@ -7,7 +7,6 @@ use tokio::fs::{self, File};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use uuid::Uuid;
 use chrono::Utc;
-use crate::file_data::core::FileData;
 use crate::io::core::Archiver;
 
 pub struct EmlArchiver;
