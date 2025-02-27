@@ -5,12 +5,15 @@ use log::{error, info, warn};
 use crate::dirscan::{get_files};
 use crate::file_data::core::{FileData, FileDataExtractor, only_errors, only_binaries, only_text_files};
 use crate::file_data::extractor_impl::FileDataExtractorImpl;
+use crate::io::core::Archiver;
+use crate::io::eml::EmlArchiver;
 
 mod args;
 mod dirscan;
 mod io_utils;
 mod logging;
 mod file_data;
+mod io;
 
 
 
@@ -57,6 +60,24 @@ async fn start() -> Result<(), Box<dyn Error>> {
 
     let text_files: Vec<FileData> = only_text_files(&file_data_list);
     info!("start: found {:?} text files", text_files.len());
+
+    let archiver: Box<dyn Archiver> = Box::new(EmlArchiver::new());
+
+    let text_paths: Vec<std::path::PathBuf> = text_files.iter()
+        .map(|file_data| file_data.path_to_file.clone())
+        .collect();
+
+    info!("start: archiving {:?} text files into the archive: {:?}", text_paths.len(), args.output_file_path);
+    let archive_result = archiver.archive(&args.output_file_path, &text_paths).await;
+
+    match archive_result {
+        Ok(_) => {
+            info!("start: archive success");
+        },
+        Err(e) => {
+            error!("start: archive error: {:?}", e);
+        }
+    }
 
     Ok(())
 }
