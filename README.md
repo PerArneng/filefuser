@@ -17,6 +17,39 @@ brew install perarneng/tap/filefuser
 ```
 If you are on Windows or use other package manager then download appropriate binary from the release page.
 
+# Building the Project
+
+To compile the project, you can use Cargo, Rust's build system and package manager. 
+In your project's root directory, run the following command for a standard (debug) build:
+
+```bash
+cargo build
+```
+For a release build, which optimizes the binary for production, use:
+
+```bash
+cargo build --release
+```
+To run the test suite and ensure that everything is working as expected, simply execute:
+
+```bash
+cargo test
+```
+
+## Example Usage
+
+To use filefuser, you can run it from the command line with the following syntax:
+
+```bash
+filefuser --file archive.eml --patterns "*.txt,*.rs" --dir ./src
+```
+This command will scan the `./src` directory for files with the `.txt` or `.rs` extension,
+and then combine them into a single EML archive named `archive.eml` in the current directory.
+
+
+
+
+
 ## Architecture
 
 This project is designed as a modular, concurrent command‐line tool that aggregates text files into a 
