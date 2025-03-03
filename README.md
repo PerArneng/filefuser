@@ -9,6 +9,8 @@ files matching user-defined glob patterns, extracts metadata to determine if the
 text files, and then combines them into a MIME multipart message complete with generated 
 headers and boundaries.
 
+> This tool is great for aggregating source code into a single file for easy pasting into a large language model.
+
 ## Installation
 
 On MacOS or Linux you can install filefuser using Homebrew:
@@ -45,10 +47,6 @@ filefuser --file archive.eml --patterns "*.txt,*.rs" --dir ./src
 ```
 This command will scan the `./src` directory for files with the `.txt` or `.rs` extension,
 and then combine them into a single EML archive named `archive.eml` in the current directory.
-
-
-
-
 
 ## Architecture
 
