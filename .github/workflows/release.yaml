@@ -38,6 +38,7 @@ jobs:
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           bin: filefuser
+          archive: $bin-$tag-$target
           # Set the target triple explicitly based on our matrix.
           target: ${{ matrix.target }}
           token: ${{ secrets.GITHUB_TOKEN }}
