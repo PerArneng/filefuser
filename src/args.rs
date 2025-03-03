@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 use clap::{Arg, Command};
-use std::fs;
+use std::{env, fs};
+use crate::io_utils;
 use crate::io_utils::{to_io_err_with_context};
 
 
@@ -55,26 +56,31 @@ pub fn parse_args() -> Result<Args, Box<dyn std::error::Error>> {
         .get_matches();
 
 
-    let full_file_path: PathBuf;
-    let file = matches.get_one::<String>("file").unwrap();
-    let file_path = Path::new(file).to_path_buf();
-    if let Some(parent) = file_path.parent() {
 
-        if !parent.is_dir() {
-            return Err(format!("parent directory '{}' is not a directory", parent.display()).into());
-        }
-        if !parent.exists() {
-            return Err(format!("parent directory '{}' does not exist", parent.display()).into());
-        }
 
-        let full_parent_path = fs::canonicalize(parent)
-            .map_err(to_io_err_with_context("making output file parent path absolute".to_string()))?;
+    let file_arg = matches.get_one::<String>("file").unwrap();
+    let mut file_path = Path::new(file_arg).to_path_buf();
 
-        full_file_path = full_parent_path.join(file_path.file_name().unwrap());
-
-    } else {
-        return Err("output file has no parent directory".into());
+    // if the given arg is just a filename then make
+    // sure it gets prefixed with current dir.
+    if io_utils::is_just_filename(&file_path) {
+        let current_dir = env::current_dir()?;
+        file_path = current_dir.join(file_path);
     }
+
+
+    let full_parent_path = fs::canonicalize(file_path.parent().unwrap())?;
+
+    if !full_parent_path.exists() {
+        return Err(format!("parent directory '{}' for output file does not exist", full_parent_path.display()).into());
+    }
+
+    if !full_parent_path.is_dir() {
+        return Err(format!("parent directory '{}' for output is not a directory", full_parent_path.display()).into());
+    }
+
+
+    let full_file_path = full_parent_path.join(file_path.file_name().unwrap());
 
     let file_type = matches.get_one::<String>("type").unwrap().clone();
     let patterns = matches.get_one::<String>("patterns").unwrap().clone();

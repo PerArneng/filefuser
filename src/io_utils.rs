@@ -1,6 +1,12 @@
 use std::io;
+use std::path::Path;
 use log::info;
 use regex::Regex;
+
+
+pub fn is_just_filename(path: &Path) -> bool {
+    path.components().count() == 1
+}
 
 pub fn to_io_err_with_context(context: String) -> impl Fn(io::Error) -> io::Error {
     move |err: io::Error| {
