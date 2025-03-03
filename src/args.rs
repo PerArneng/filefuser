@@ -14,7 +14,7 @@ pub struct Args {
 }
 pub fn parse_args() -> Result<Args, Box<dyn std::error::Error>> {
     let matches = Command::new("filefuser")
-        .version("0.1.0")
+        .version(env!("CARGO_PKG_VERSION"))
         .author("Per Arneng <per.arneng@scalebit.com>")
         .about("Combines text files into a single text document using mime multipart")
         .arg(
