@@ -63,3 +63,12 @@ EML archive—it dynamically generates MIME headers and boundaries, reads each t
 and assembles everything into a well-formed EML file. Throughout the system, dedicated logging and 
 utility modules support detailed error reporting and streamlined file operations, resulting in a 
 robust, maintainable, and high-performance Rust application.
+
+## References
+
+* [RFC 5322 - Internet Message Format](https://tools.ietf.org/html/rfc5322)  
+  Defines the structure of email messages, including headers such as Date, From, To, Subject, and MIME-Version.
+* [RFC 2045 - Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies](https://tools.ietf.org/html/rfc2045)  
+  Specifies the syntax for formatting message bodies to include various types of data in emails.
+* [RFC 2046 - Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types](https://tools.ietf.org/html/rfc2046)  
+  Defines the media type system used in MIME, detailing how to classify the content contained within email messages.
